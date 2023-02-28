@@ -1,3 +1,40 @@
+# Golang Chat TUI with OpenPGP encryption
+
+This is a simple terminal user interface (TUI) chat application written in 
+Golang that uses OpenPGP encryption to secure messages sent and received. The 
+application has peer-to-peer (P2P) capabilities, which means that you can 
+chat directly with other users without any centralized server.
+
+The application uses the OpenPGP standard to encrypt messages and ensures that 
+only the intended recipient(s) can read them. This is done by generating a 
+unique public/private key pair for each user, and exchanging public keys with 
+other users to establish a trust relationship. Once the trust relationship is 
+established, users can exchange messages that are encrypted and signed with 
+their private key.
+
+The TUI interface is simple and intuitive, with a list of contacts on the right 
+and a chat window on the left. Users can add new contacts by sharing their 
+public key, and can start a chat by selecting a contact and typing a message. The 
+application also supports basic commands, such as /help to show the list of available 
+commands, /quit to exit the application, and /clear to clear the chat history.
+
+This project is open-source and welcomes contributions from anyone interested in 
+improving it. Feel free to clone the repository and submit pull requests with bug 
+fixes, new features, or improvements to the documentation.
+
+## Getting started
+
+To run the application, you need to have Golang installed on your system. Once you have 
+Golang, you can clone the repository and build the application by running the following 
+commands:
+
+```bash
+git clone https://github.com/nbazzeghin/pgp-chat.git
+cd pgp-chat
+go build .
+./pgp-chat
+```
+
 ## GPG-Chat Notes
 - The chat app should make use of p2p and DHT to connect to peers.
 - Messages sent to other peers should be encrypted with GPG.
@@ -32,3 +69,18 @@
 - https://github.com/charmbracelet/charm - Easy backend for CLI projects
 - https://www.youtube.com/@charmcli/videos - Charm Vidoes
 - https://github.com/mudler/edgevpn - VPN based on libp2p
+
+## Contributing
+Contributions are always welcome! If you want to contribute to this project, 
+please follow these steps:
+
+1. Fork the repository
+2. Create a new branch for your changes
+3. Make your changes and commit them
+4. Push your changes to your fork
+5. Submit a pull request to the main repository
+
+Please make sure to follow the code of conduct and the contribution guidelines when submitting pull requests.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE]() file for details.
