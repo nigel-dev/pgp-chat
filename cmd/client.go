@@ -23,6 +23,9 @@ package cmd
 
 import (
 	"fmt"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/nbazzeghin/pgp-chat/internal/tui"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -38,7 +41,11 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("client called")
+		p := tea.NewProgram(tui.InitialModel())
+		if _, err := p.Run(); err != nil {
+			fmt.Printf("Alas, there's been an error: %v", err)
+			os.Exit(1)
+		}
 	},
 }
 
