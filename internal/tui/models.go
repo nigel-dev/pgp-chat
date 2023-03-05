@@ -20,12 +20,15 @@ func (p PublicKey) Title() string {
 	if p.active {
 		return "✅ " + p.userName
 	}
-	return "⭕" + p.userName
+	return p.userName
 }
 func (p PublicKey) Description() string {
 	return p.fingerprint
 }
 func (p PublicKey) FilterValue() string {
+	if p.active {
+		return "FFF " + p.userName
+	}
 	return p.userName
 }
 

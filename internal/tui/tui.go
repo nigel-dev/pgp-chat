@@ -29,6 +29,7 @@ func InitialModel() model {
 		// of the `choices` slice, above.
 		selected: make(map[int]struct{}),
 		list:     list.New(keys, newPublicKeyDelegate(newDelegateKeyMap()), 0, 0),
+		//list: list.New(keys, list.NewDefaultDelegate(), 0, 1),
 	}
 }
 
@@ -42,13 +43,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// Is it a key press?
 	case tea.KeyMsg:
-
+		if m.list.FilterState() == list.Filtering {
+			break
+		}
 		// Cool, what was the actual key pressed?
 		switch msg.String() {
 
 		// These keys should exit the program.
 		case "ctrl+c", "q":
 			return m, tea.Quit
+			//case "f1", " ":
+			//	index := m.list.Index()
+			//	i := m.list.SelectedItem().(PublicKey)
+			//	a := !i.active
+			//	i.active = a
+			//	m.list.SetItem(index, i)
+			//	return m, nil
 		}
 	case tea.WindowSizeMsg:
 		h, v := docStyle.GetFrameSize()

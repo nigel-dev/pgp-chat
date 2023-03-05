@@ -4,6 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"golang.org/x/exp/slices"
 	"strconv"
 )
 
@@ -16,7 +17,6 @@ func newPublicKeyDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 		if i, ok := m.SelectedItem().(PublicKey); ok {
 			title = i.Title()
-			//active = i.active
 		} else {
 			return nil
 		}
@@ -25,14 +25,15 @@ func newPublicKeyDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		case tea.KeyMsg:
 			switch {
 			case key.Matches(msg, keys.choose):
-				index := m.Index()
-				publicKey := m.SelectedItem().(PublicKey)
-				if publicKey.active {
-					publicKey.active = false
-				} else {
-					publicKey.active = true
-				}
-				m.SetItem(index, publicKey)
+				item := m.SelectedItem()
+				items := m.Items()
+
+				idx := slices.Index(items, item)
+				publicKey := item.(PublicKey)
+				a := !publicKey.active
+				publicKey.active = a
+
+				m.SetItem(idx, publicKey)
 				return m.NewStatusMessage(statusMessageStyle("You chose " + title + " | active:" +
 					strconv.FormatBool(publicKey.active)))
 			}
@@ -79,8 +80,8 @@ func (d delegateKeyMap) FullHelp() [][]key.Binding {
 func newDelegateKeyMap() *delegateKeyMap {
 	return &delegateKeyMap{
 		choose: key.NewBinding(
-			key.WithKeys("f1"),
-			key.WithHelp("f1", "choose"),
+			key.WithKeys("enter"),
+			key.WithHelp("enter", "choose"),
 		),
 	}
 }
