@@ -69,6 +69,8 @@ go build .
 - https://github.com/charmbracelet/charm - Easy backend for CLI projects
 - https://www.youtube.com/@charmcli/videos - Charm Vidoes
 - https://github.com/mudler/edgevpn - VPN based on libp2p
+- https://goreleaser.com/ - release cli for golang!
+- https://golangci-lint.run/ - golang linter w/ IDE support
 
 ## Contributing
 Contributions are always welcome! If you want to contribute to this project, 

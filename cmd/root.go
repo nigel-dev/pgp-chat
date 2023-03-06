@@ -34,10 +34,10 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gpg-chat",
-	Short: "A secure chat server and client in one",
-	Long: `A secure chat server and client in one. Makes use of OpenGPG to ensure 
-communications between parties secure and verified.`,
+	Use:   "pgp-chat",
+	Short: "A secure peer to peer chat client and server in one.",
+	Long: `A secure peer to peer chat client and server in one. Makes use of OpenPGP to ensure 
+communications between parties is secure and verified.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -59,7 +59,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gpg-chat.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.pgp-chat.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -91,4 +91,8 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+func SetVersionInfo(version, commit, date string) {
+	rootCmd.Version = fmt.Sprintf("%s (Built on %s from Git SHA %s)", version, date, commit)
 }

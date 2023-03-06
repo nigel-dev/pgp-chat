@@ -34,6 +34,9 @@ type Client struct {
 	statusbar  statusbar.Bubble
 	keys       KeyMap
 	activeBox  int
+	theme      theme.Theme
+	ready      bool
+	content    string
 }
 
 func New() Client {
@@ -48,14 +51,46 @@ func New() Client {
 		ChatUser{userName: "eiieol82", desc: ""},
 	}
 
+	var dataChatContent = `
+## Jim Baluchi <jim@baluchi.com>
+
+So this is a pretty cool app.
+
+----
+
+## Test Guy <test@guy.com>
+
+It is a very cool app for sure!
+we can do multi line items too.
+
+----
+
+# *Nigel <nigel@nigel.com>*
+
+> I thought so too, thats why i wrote it. Donec elementum condimentum suscipit. Aliquam in interdum lacus. Cras nunc leo, eleifend sit amet vestibulum a, egestas eget dolor. Duis blandit porttitor est, a viverra odio fermentum in. Quisque non sem sit amet sem pulvinar gravida a at ligula. Fusce massa turpis, suscipit ac massa id, imperdiet elementum enim. Pellentesque ut enim ut sapien tincidunt ultricies. Morbi vel lacinia ipsum. Etiam quis erat imperdiet velit congue iaculis. Curabitur porta nec nisl ut fringilla.
+
+----
+`
+
 	var ownUserName = "Billy Bob"
 
 	themeData := theme.GetTheme("default")
 
 	inputModel := textarea.New()
-	viewportModel := viewport.New(100, 100)
+
 	userListModel := list.New(dataUserList, list.NewDefaultDelegate(), 0, 0)
-	keylistModel := list.New(dataPublicKeys, list.NewDefaultDelegate(), 0, 0)
+	userListModel.SetShowHelp(false)
+	userListModel.SetFilteringEnabled(false)
+	userListModel.SetShowStatusBar(false)
+	userListModel.SetShowTitle(false)
+	userListModel.SetHeight(20)
+	userListModel.SetWidth(500)
+
+	keylistModel := list.New(dataPublicKeys, list.NewDefaultDelegate(), 0, 3)
+	keylistModel.SetShowTitle(false)
+	keylistModel.SetHeight(20)
+	keylistModel.SetWidth(30)
+
 	statusbarModel := statusbar.New(
 		statusbar.ColorConfig{
 			Foreground: themeData.StatusBarSelectedFileForegroundColor,
@@ -74,14 +109,14 @@ func New() Client {
 			Background: themeData.StatusBarLogoBackgroundColor,
 		},
 	)
-
 	return Client{
 		input:     inputModel,
 		username:  ownUserName,
-		viewport:  viewportModel,
 		userList:  userListModel,
 		keyList:   keylistModel,
 		statusbar: statusbarModel,
+		theme:     themeData,
+		content:   dataChatContent,
 	}
 }
 
