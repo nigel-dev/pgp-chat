@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 	log "github.com/charmbracelet/log"
+	"strings"
 )
 
 func (c Client) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -24,7 +25,9 @@ func (c Client) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			glamour.WithWordWrap(80),
 		)
 
-		str, _ := renderer.Render(c.content)
+		c.messageRender = renderer
+
+		str, _ := c.messageRender.Render(strings.Join(c.messages, "\n"))
 		c.viewport.SetContent(str)
 		c.ready = true
 		c.viewport.GotoTop()
@@ -58,20 +61,24 @@ func (c Client) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			c.multiLineSend = !c.multiLineSend
 			if c.multiLineSend {
 				c.input.SetHeight(5)
+				c.input.KeyMap.InsertNewline.SetEnabled(true)
 				c.input.Reset()
 			} else {
 				c.input.SetHeight(1)
 				c.input.Reset()
+				c.input.KeyMap.InsertNewline.SetEnabled(false)
 			}
 		case key.Matches(msg, c.keys.Send, c.keys.MultiLineSend):
 			if c.input.Focused() {
 				if !c.multiLineSend {
 					log.Debug("Sent ", "key", c.input.Value())
+					c.sendMessage(c.input.Value())
 					c.input.Reset()
 					c.input.SetValue("")
 				} else {
 					if key.Matches(msg, c.keys.MultiLineSend) {
 						log.Debug("Sent ", "key", c.input.Value())
+						c.sendMessage(c.input.Value())
 						c.input.SetHeight(1)
 						c.multiLineSend = false
 						c.input.Reset()
@@ -112,4 +119,10 @@ func (c *Client) onWindowSizeChanged(msg tea.WindowSizeMsg) {
 	c.keyList.SetHeight(msg.Height/2 - 10)
 	c.viewport.Width = msg.Width - lipgloss.Width(c.keyListView())
 	c.input.SetWidth(msg.Width - lipgloss.Width(c.keyListView()) - 12)
+}
+
+func (c *Client) sendMessage(message string) {
+	c.messages = append(c.messages, "# Me\n\n"+c.input.Value())
+	str, _ := c.messageRender.Render(strings.Join(c.messages, "\n\n----\n"))
+	c.viewport.SetContent(str)
 }

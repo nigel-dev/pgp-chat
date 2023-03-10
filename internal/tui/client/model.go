@@ -6,6 +6,8 @@ import (
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/glamour"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 	"github.com/knipferrc/teacup/statusbar"
 	"github.com/nbazzeghin/pgp-chat/internal/tui/context"
@@ -44,9 +46,10 @@ type Client struct {
 	activeBox     int
 	ctx           context.ProgramContext
 	ready         bool
-	content       string
+	messages      []string
 	debug         bool
 	multiLineSend bool
+	messageRender *glamour.TermRenderer
 }
 
 func New(debug bool) (Client, *os.File) {
@@ -81,20 +84,15 @@ func New(debug bool) (Client, *os.File) {
 
 	var dataChatContent = `
 ## Jim Baluchi <jim@baluchi.com>
-
 So this is a pretty cool app.
 
 ----
-
 ## Test Guy <test@guy.com>
-
 It is a very cool app for sure!
 we can do multi line items too.
 
 ----
-
 # *Nigel <nigel@nigel.com>*
-
 > I thought so too, thats why i wrote it. Donec elementum condimentum suscipit. Aliquam in interdum lacus. Cras nunc leo, eleifend sit amet vestibulum a, egestas eget dolor. Duis blandit porttitor est, a viverra odio fermentum in. Quisque non sem sit amet sem pulvinar gravida a at ligula. Fusce massa turpis, suscipit ac massa id, imperdiet elementum enim. Pellentesque ut enim ut sapien tincidunt ultricies. Morbi vel lacinia ipsum. Etiam quis erat imperdiet velit congue iaculis. Curabitur porta nec nisl ut fringilla.
 
 ----
@@ -108,7 +106,10 @@ we can do multi line items too.
 	inputModel.ShowLineNumbers = false
 	inputModel.Blur()
 	inputModel.Prompt = "> "
+	inputModel.Placeholder = "Send message..."
 	inputModel.SetHeight(1)
+	inputModel.KeyMap.InsertNewline.SetEnabled(false)
+	inputModel.FocusedStyle.CursorLine = lipgloss.NewStyle()
 
 	userListModel := list.New(dataUserList, list.NewDefaultDelegate(), 0, 0)
 	userListModel.SetShowHelp(false)
@@ -151,12 +152,11 @@ we can do multi line items too.
 		userList:  userListModel,
 		keyList:   keylistModel,
 		statusbar: statusbarModel,
-		content:   dataChatContent,
 		help:      help,
 		debug:     debug,
 		keys:      Keys,
 	}
-
+	c.messages = append(c.messages, dataChatContent)
 	c.ctx = context.ProgramContext{
 		Theme: themeData,
 	}
