@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/nbazzeghin/pgp-chat/internal/utils"
 	"strings"
@@ -9,75 +10,120 @@ import (
 func (c Client) View() string {
 	return lipgloss.JoinVertical(lipgloss.Top,
 		c.headerView(),
+		//c.mainView(),
+		//c.messageView(),
 		lipgloss.JoinHorizontal(lipgloss.Top,
-			c.messageView(),
-			lipgloss.JoinVertical(lipgloss.Bottom,
-				c.keyListView(),
-				c.userListView(),
-			),
+			c.mainView(),
+			c.sideView(),
 		),
+		//c.inputView(),
+		c.helpView(),
 		c.footerView(),
 	)
 }
 
-func (c Client) headerView() string {
+func (c *Client) headerView() string {
+	var debug string = ""
+	if c.debug {
+		debug = " - DEBUG"
+	}
 	header := lipgloss.NewStyle().
 		Bold(true).
-		Foreground(c.theme.ActiveBoxBorderColor).
+		Foreground(c.ctx.Theme.ActiveBoxBorderColor).
 		Padding(1).
-		Render("PGP Chat (v0.1.0)")
-	line := strings.Repeat("─", utils.Max(0, c.viewport.Width-lipgloss.Width(header)))
+		Render(fmt.Sprintf("PGP Chat (v0.1.0)%s", debug))
+	line := strings.Repeat("─", utils.Max(0, c.ctx.ScreenWidth-lipgloss.Width(header)))
 	return lipgloss.JoinHorizontal(lipgloss.Center, header, line)
 }
 
-func (c Client) keyListView() string {
-	header := lipgloss.NewStyle().
-		Bold(false).
-		MarginBottom(0).
-		Foreground(c.theme.UnselectedTreeItemColor).
+func (c *Client) mainView() string {
+	views := lipgloss.JoinVertical(lipgloss.Top, c.messageView(), c.inputView())
+	main := lipgloss.NewStyle().
 		Padding(1).
-		PaddingBottom(-1).
-		Render("PGP Keys")
+		BorderRight(true).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(c.ctx.Theme.BorderColor).
+		Render(views)
 
-	keylist := lipgloss.NewStyle().
-		Padding(1).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(c.theme.InactiveBoxBorderColor).
-		Render(c.keyList.View())
-	return lipgloss.JoinVertical(lipgloss.Bottom, header, keylist)
+	return main
 }
 
-func (c Client) userListView() string {
-	header := lipgloss.NewStyle().
-		Bold(false).
-		MarginBottom(0).
-		Foreground(c.theme.UnselectedTreeItemColor).
+func (c *Client) sideView() string {
+	views := lipgloss.JoinVertical(lipgloss.Top, c.keyListView(), c.userListView())
+	side := lipgloss.NewStyle().
 		Padding(1).
-		PaddingBottom(-1).
-		Render("Connected Clients")
+		Render(views)
 
-	userlist := lipgloss.NewStyle().
+	return side
+}
+func (c *Client) helpView() string {
+	help := lipgloss.NewStyle().
 		Padding(1).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(c.theme.InactiveBoxBorderColor).
-		Render(c.userList.View())
-	return lipgloss.JoinVertical(lipgloss.Bottom, header, userlist)
+		Width(c.ctx.ScreenWidth).
+		BorderTop(true).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(c.ctx.Theme.BorderColor).
+		Render(c.help.View(GetKeyMap()))
+	return help
 }
 
-func (c Client) messageView() string {
-	messages := lipgloss.NewStyle().
-		Padding(1).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(c.theme.InactiveBoxBorderColor).
-		Render(c.viewport.View())
-	return messages
-}
+func (c *Client) footerView() string {
 
-func (c Client) inputView() string {
-	return ""
-}
-
-func (c Client) footerView() string {
-	c.statusbar.SetContent("FOO", "BAR", "FRESH", "BAZZ")
+	//return lipgloss.JoinVertical(
+	//	lipgloss.Top,
+	//	lipgloss.NewStyle().Height(c.ctx.ScreenHeight-statusbar.Height-lipgloss.Height(c.messageView())-lipgloss.Height(c.headerView())-lipgloss.Height(c.helpView())).Render("Content"),
+	//	c.statusbar.View(),
+	//)
 	return c.statusbar.View()
+	//return lipgloss.JoinVertical(lipgloss.Bottom, c.helpView(), c.statusbar.View())
+}
+
+func (c *Client) keyListView() string {
+
+	//header := lipgloss.NewStyle().
+	//	Bold(false).
+	//	MarginBottom(0).
+	//	Foreground(c.ctx.Theme.UnselectedTreeItemColor).
+	//	Padding(1).
+	//	PaddingBottom(-1).
+	//	Render("PGP Keys")
+	//
+	//keylist := lipgloss.NewStyle().
+	//	Padding(1).
+	//	BorderStyle(lipgloss.RoundedBorder()).
+	//	BorderForeground(c.ctx.Theme.InactiveBoxBorderColor).
+	//	Render(c.keyList.View())
+	//return lipgloss.JoinVertical(lipgloss.Bottom, header, keylist)
+	return c.keyList.View()
+}
+
+func (c *Client) userListView() string {
+	//header := lipgloss.NewStyle().
+	//	Bold(false).
+	//	MarginBottom(0).
+	//	Foreground(c.ctx.Theme.UnselectedTreeItemColor).
+	//	Padding(1).
+	//	PaddingBottom(-1).
+	//	Render("Connected Clients")
+	//
+	//userlist := lipgloss.NewStyle().
+	//	Padding(1).
+	//	BorderStyle(lipgloss.RoundedBorder()).
+	//	BorderForeground(c.ctx.Theme.InactiveBoxBorderColor).
+	//	Render(c.userList.View())
+	//return lipgloss.JoinVertical(lipgloss.Bottom, header, userlist)
+	return c.userList.View()
+}
+func (c *Client) messageView() string {
+	c.viewport.Height = c.ctx.ScreenHeight - 2 - lipgloss.Height(c.inputView()) - lipgloss.Height(c.headerView()) - lipgloss.Height(c.helpView()) - lipgloss.Height(c.footerView())
+	return c.viewport.View()
+}
+
+func (c *Client) inputView() string {
+	inputs := lipgloss.NewStyle().
+		Padding(0).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(c.ctx.Theme.BorderColor).
+		Render(c.input.View())
+	return inputs
 }

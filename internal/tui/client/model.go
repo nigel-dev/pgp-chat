@@ -1,11 +1,18 @@
 package client
 
 import (
+	bhelp "github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textarea"
 	"github.com/charmbracelet/bubbles/viewport"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/log"
 	"github.com/knipferrc/teacup/statusbar"
+	"github.com/nbazzeghin/pgp-chat/internal/tui/context"
 	"github.com/nbazzeghin/pgp-chat/internal/tui/theme"
+	slog "log"
+	"os"
+	"time"
 )
 
 type PublicKey struct {
@@ -24,22 +31,43 @@ type ChatUser struct {
 }
 
 type Client struct {
-	input      textarea.Model
-	username   string
-	users      []string
-	viewport   viewport.Model
-	userList   list.Model
-	keyList    list.Model
-	publicKeys []PublicKey
-	statusbar  statusbar.Bubble
-	keys       KeyMap
-	activeBox  int
-	theme      theme.Theme
-	ready      bool
-	content    string
+	input         textarea.Model
+	username      string
+	users         []string
+	viewport      viewport.Model
+	userList      list.Model
+	keyList       list.Model
+	publicKeys    []PublicKey
+	help          bhelp.Model
+	statusbar     statusbar.Bubble
+	keys          KeyMap
+	activeBox     int
+	ctx           context.ProgramContext
+	ready         bool
+	content       string
+	debug         bool
+	multiLineSend bool
 }
 
-func New() Client {
+func New(debug bool) (Client, *os.File) {
+
+	var loggerFile *os.File
+
+	if debug {
+		var fileErr error
+		logFile, fileErr := os.OpenFile("debug.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if fileErr == nil {
+			log.SetOutput(logFile)
+			log.SetTimeFormat(time.Kitchen)
+			log.SetReportCaller(true)
+			log.SetLevel(log.DebugLevel)
+			log.Debug("Logging to debug.log")
+		} else {
+			loggerFile, _ = tea.LogToFile("debug.log", "debug")
+			slog.Print("Failed setting up logging", fileErr)
+		}
+	}
+
 	dataPublicKeys := []list.Item{
 		PublicKey{userName: "Jim Baluchi <jim@baluchi.com>", fingerprint: "ABC123DEF456"},
 		PublicKey{userName: "Test Guy <test@guy.com>", fingerprint: "456DEF123ABC", active: true},
@@ -73,10 +101,14 @@ we can do multi line items too.
 `
 
 	var ownUserName = "Billy Bob"
-
 	themeData := theme.GetTheme("default")
 
 	inputModel := textarea.New()
+	inputModel.Focus()
+	inputModel.ShowLineNumbers = false
+	inputModel.Blur()
+	inputModel.Prompt = "> "
+	inputModel.SetHeight(1)
 
 	userListModel := list.New(dataUserList, list.NewDefaultDelegate(), 0, 0)
 	userListModel.SetShowHelp(false)
@@ -90,6 +122,8 @@ we can do multi line items too.
 	keylistModel.SetShowTitle(false)
 	keylistModel.SetHeight(20)
 	keylistModel.SetWidth(30)
+
+	help := bhelp.New()
 
 	statusbarModel := statusbar.New(
 		statusbar.ColorConfig{
@@ -109,15 +143,25 @@ we can do multi line items too.
 			Background: themeData.StatusBarLogoBackgroundColor,
 		},
 	)
-	return Client{
+	statusbarModel.SetContent("FOO", "BAR", "FRESH", "BAZZ")
+
+	c := Client{
 		input:     inputModel,
 		username:  ownUserName,
 		userList:  userListModel,
 		keyList:   keylistModel,
 		statusbar: statusbarModel,
-		theme:     themeData,
 		content:   dataChatContent,
+		help:      help,
+		debug:     debug,
+		keys:      Keys,
 	}
+
+	c.ctx = context.ProgramContext{
+		Theme: themeData,
+	}
+
+	return c, loggerFile
 }
 
 func (p PublicKey) Title() string {

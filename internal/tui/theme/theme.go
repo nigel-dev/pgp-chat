@@ -17,6 +17,7 @@ type Theme struct {
 	StatusBarLogoBackgroundColor         lipgloss.AdaptiveColor
 	TitleBackgroundColor                 lipgloss.AdaptiveColor
 	TitleForegroundColor                 lipgloss.AdaptiveColor
+	BorderColor                          lipgloss.AdaptiveColor
 }
 
 var themeMap = map[string]Theme{
@@ -35,6 +36,7 @@ var themeMap = map[string]Theme{
 		StatusBarLogoBackgroundColor:         lipgloss.AdaptiveColor{Dark: "#6124DF", Light: "#6124DF"},
 		TitleBackgroundColor:                 lipgloss.AdaptiveColor{Dark: "63", Light: "63"},
 		TitleForegroundColor:                 lipgloss.AdaptiveColor{Dark: "#ffffff", Light: "#ffffff"},
+		BorderColor:                          lipgloss.AdaptiveColor{Dark: "#666", Light: "#333"},
 	},
 	"gruvbox": {
 		SelectedTreeItemColor:                lipgloss.AdaptiveColor{Dark: "#d65d0e", Light: "#d65d0e"},
