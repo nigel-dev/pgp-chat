@@ -41,7 +41,7 @@ func (c Client) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		log.Debug("Key pressed", "key", msg.String())
 		switch {
 		case key.Matches(msg, c.keys.Quit):
-			if c.keyList.FilterState() != list.Filtering || !c.input.Focused() {
+			if !c.inputActive() {
 				return c, tea.Quit
 			}
 		case key.Matches(msg, c.keys.SwitchFocus):
@@ -115,9 +115,10 @@ func (c *Client) onWindowSizeChanged(msg tea.WindowSizeMsg) {
 	c.ctx.ScreenHeight = msg.Height
 	c.statusbar.SetSize(msg.Width)
 	c.help.Width = msg.Width
-	c.userList.SetHeight(msg.Height/2 - 10)
+	//c.userList.SetHeight(msg.Height/2 - 10)
 	c.keyList.SetHeight(msg.Height/2 - 10)
-	c.viewport.Width = msg.Width - lipgloss.Width(c.keyListView())
+	c.keyList.SetWidth(msg.Width - lipgloss.Width(c.messageView()) - 20)
+	//c.viewport.Width = msg.Width - 20
 	c.input.SetWidth(msg.Width - lipgloss.Width(c.keyListView()) - 12)
 }
 
@@ -125,4 +126,14 @@ func (c *Client) sendMessage(message string) {
 	c.messages = append(c.messages, "# Me\n\n"+c.input.Value())
 	str, _ := c.messageRender.Render(strings.Join(c.messages, "\n\n----\n"))
 	c.viewport.SetContent(str)
+}
+
+func (c *Client) inputActive() bool {
+	if c.input.Focused() {
+		return true
+	}
+	if c.keyList.FilterState() == list.Filtering {
+		return true
+	}
+	return false
 }

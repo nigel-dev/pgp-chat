@@ -75,6 +75,9 @@ func New(debug bool) (Client, *os.File) {
 		PublicKey{userName: "Jim Baluchi <jim@baluchi.com>", fingerprint: "ABC123DEF456"},
 		PublicKey{userName: "Test Guy <test@guy.com>", fingerprint: "456DEF123ABC", active: true},
 		PublicKey{userName: "Bleh Belhi (this is a comment) <bleh@bleh.com>", fingerprint: "789DFI423AJD"},
+		PublicKey{userName: "Blarg Zimmy (this is a comment) <bleh@bleh.com>", fingerprint: "789DFI423AJD"},
+		PublicKey{userName: "Tommy BHee (this is a comment) <bleh@bleh.com>", fingerprint: "789DFI423AJD"},
+		PublicKey{userName: "Kevin Belcon (this is a comment) <bleh@bleh.com>", fingerprint: "789DFI423AJD"},
 	}
 
 	dataUserList := []list.Item{
@@ -116,13 +119,16 @@ we can do multi line items too.
 	userListModel.SetFilteringEnabled(false)
 	userListModel.SetShowStatusBar(false)
 	userListModel.SetShowTitle(false)
-	userListModel.SetHeight(20)
-	userListModel.SetWidth(500)
+	userListModel.KeyMap.Quit.SetEnabled(false)
+	//userListModel.SetHeight(20)
+	//userListModel.SetWidth(500)
 
 	keylistModel := list.New(dataPublicKeys, list.NewDefaultDelegate(), 0, 3)
 	keylistModel.SetShowTitle(false)
-	keylistModel.SetHeight(20)
-	keylistModel.SetWidth(30)
+	keylistModel.KeyMap.Quit.SetEnabled(false)
+	keylistModel.SetShowHelp(false)
+	//keylistModel.SetHeight(20)
+	//keylistModel.SetWidth(30)
 
 	help := bhelp.New()
 

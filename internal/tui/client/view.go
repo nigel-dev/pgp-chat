@@ -39,6 +39,7 @@ func (c *Client) headerView() string {
 func (c *Client) mainView() string {
 	views := lipgloss.JoinVertical(lipgloss.Top, c.messageView(), c.inputView())
 	main := lipgloss.NewStyle().
+		Width(c.ctx.ScreenWidth - 40).
 		Padding(1).
 		BorderRight(true).
 		BorderStyle(lipgloss.NormalBorder()).
@@ -80,39 +81,30 @@ func (c *Client) footerView() string {
 
 func (c *Client) keyListView() string {
 
-	//header := lipgloss.NewStyle().
-	//	Bold(false).
-	//	MarginBottom(0).
-	//	Foreground(c.ctx.Theme.UnselectedTreeItemColor).
-	//	Padding(1).
-	//	PaddingBottom(-1).
-	//	Render("PGP Keys")
-	//
-	//keylist := lipgloss.NewStyle().
-	//	Padding(1).
-	//	BorderStyle(lipgloss.RoundedBorder()).
-	//	BorderForeground(c.ctx.Theme.InactiveBoxBorderColor).
-	//	Render(c.keyList.View())
-	//return lipgloss.JoinVertical(lipgloss.Bottom, header, keylist)
-	return c.keyList.View()
+	keys := lipgloss.NewStyle().
+		Padding(1).
+		Width(c.ctx.ScreenWidth - 3 - lipgloss.Width(c.mainView())).
+		Height(c.ctx.ScreenHeight/2 - lipgloss.Height(c.headerView()) - lipgloss.Height(c.helpView()) - lipgloss.Height(c.footerView())).
+		BorderBottom(true).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(c.ctx.Theme.BorderColor).
+		Render(c.keyList.View())
+	//return c.keyList.View()
+	return keys
 }
 
 func (c *Client) userListView() string {
-	//header := lipgloss.NewStyle().
-	//	Bold(false).
-	//	MarginBottom(0).
-	//	Foreground(c.ctx.Theme.UnselectedTreeItemColor).
-	//	Padding(1).
-	//	PaddingBottom(-1).
-	//	Render("Connected Clients")
-	//
-	//userlist := lipgloss.NewStyle().
-	//	Padding(1).
-	//	BorderStyle(lipgloss.RoundedBorder()).
-	//	BorderForeground(c.ctx.Theme.InactiveBoxBorderColor).
-	//	Render(c.userList.View())
-	//return lipgloss.JoinVertical(lipgloss.Bottom, header, userlist)
-	return c.userList.View()
+	users := lipgloss.NewStyle().
+		Padding(1).
+		Width(c.ctx.ScreenWidth - 3 - lipgloss.Width(c.mainView())).
+		//Height(c.ctx.ScreenHeight - 3 - lipgloss.Height(c.keyListView()) - lipgloss.Height(c.headerView()) - lipgloss.Height(c.helpView()) - lipgloss.Height(c.footerView())).
+		Height(c.ctx.ScreenHeight/2 - lipgloss.Height(c.headerView()) - lipgloss.Height(c.helpView()) - lipgloss.Height(c.footerView())).
+		BorderTop(true).
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(c.ctx.Theme.BorderColor).
+		Render("c.userList.View()")
+
+	return users
 }
 func (c *Client) messageView() string {
 	c.viewport.Height = c.ctx.ScreenHeight - 2 - lipgloss.Height(c.inputView()) - lipgloss.Height(c.headerView()) - lipgloss.Height(c.helpView()) - lipgloss.Height(c.footerView())

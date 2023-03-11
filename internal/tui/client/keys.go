@@ -20,10 +20,12 @@ type KeyMap struct {
 	MultiLineToggle key.Binding
 	Send            key.Binding
 	MultiLineSend   key.Binding
+	Filter          key.Binding
+	ToggleKey       key.Binding
 }
 
 var Keys = KeyMap{
-	Quit:            key.NewBinding(key.WithKeys("q", "esc", "ctrl+c"), key.WithHelp("q", "quit")),
+	Quit:            key.NewBinding(key.WithKeys("q", "ctrl+c"), key.WithHelp("q", "quit")),
 	Help:            key.NewBinding(key.WithKeys("?"), key.WithHelp("?", "toggle help")),
 	SwitchFocus:     key.NewBinding(key.WithKeys("tab"), key.WithHelp("tab", "switch focus")),
 	Up:              key.NewBinding(key.WithKeys("up", "k"), key.WithHelp("↑/k", "move up")),
@@ -37,6 +39,8 @@ var Keys = KeyMap{
 	MultiLineToggle: key.NewBinding(key.WithKeys("ctrl+l"), key.WithHelp("ctrl+l", "Toggle multiline edit mode")),
 	MultiLineSend:   key.NewBinding(key.WithKeys("ctrl+j"), key.WithHelp("ctrl+j", "Send multiline message")),
 	Send:            key.NewBinding(key.WithKeys("enter"), key.WithHelp("enter", "Send message")),
+	Filter:          key.NewBinding(key.WithKeys("/"), key.WithHelp("/", "Filter PGP Keys")),
+	ToggleKey:       key.NewBinding(key.WithKeys(" "), key.WithHelp(" ", "Toggle PGP Key selected state")),
 }
 
 func GetKeyMap() help.KeyMap {
@@ -61,7 +65,7 @@ func (k KeyMap) NavigationKeys() []key.Binding {
 }
 
 func (k KeyMap) AppKeys() []key.Binding {
-	return []key.Binding{k.SwitchFocus, k.Send, k.MultiLineToggle, k.MultiLineSend}
+	return []key.Binding{k.SwitchFocus, k.Send, k.Filter, k.MultiLineToggle, k.MultiLineSend}
 }
 
 func (k KeyMap) QuitAndHelpKeys() []key.Binding {
