@@ -24,7 +24,7 @@ package cmd
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/nbazzeghin/pgp-chat/internal/tui/client"
+	"github.com/nbazzeghin/pgp-chat/internal/ui/client"
 	"os"
 
 	"github.com/spf13/cobra"

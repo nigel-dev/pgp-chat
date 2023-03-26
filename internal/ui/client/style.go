@@ -1,6 +1,7 @@
 package client
 
 import (
+	"github.com/charmbracelet/lipgloss"
 	"golang.org/x/crypto/ssh/terminal"
 	"os"
 )
@@ -17,4 +18,8 @@ var (
 	heightSetting = 6
 	heightSession = Wheight - heightSetting - 7
 	heightChat    = Wheight - heightPrompt - 7
+
+	statusMessageStyle = lipgloss.NewStyle().
+				Foreground(lipgloss.AdaptiveColor{Light: "#04B575", Dark: "#04B575"}).
+				Render
 )

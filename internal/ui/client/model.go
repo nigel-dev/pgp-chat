@@ -10,8 +10,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 	"github.com/knipferrc/teacup/statusbar"
-	"github.com/nbazzeghin/pgp-chat/internal/tui/context"
-	"github.com/nbazzeghin/pgp-chat/internal/tui/theme"
+	"github.com/nbazzeghin/pgp-chat/internal/ui/context"
+	"github.com/nbazzeghin/pgp-chat/internal/ui/theme"
 	slog "log"
 	"os"
 	"time"
@@ -53,6 +53,8 @@ type Client struct {
 }
 
 func New(debug bool) (Client, *os.File) {
+
+	c := Client{}
 
 	var loggerFile *os.File
 
@@ -103,6 +105,9 @@ we can do multi line items too.
 
 	var ownUserName = "Billy Bob"
 	themeData := theme.GetTheme("default")
+	c.ctx = context.ProgramContext{
+		Theme: themeData,
+	}
 
 	inputModel := textarea.New()
 	inputModel.Focus()
@@ -123,10 +128,11 @@ we can do multi line items too.
 	//userListModel.SetHeight(20)
 	//userListModel.SetWidth(500)
 
-	keylistModel := list.New(dataPublicKeys, list.NewDefaultDelegate(), 0, 3)
+	keylistModel := list.New(dataPublicKeys, newPublicKeyDelegate(&c.ctx), 0, 3)
 	keylistModel.SetShowTitle(false)
 	keylistModel.KeyMap.Quit.SetEnabled(false)
 	keylistModel.SetShowHelp(false)
+	keylistModel.DisableQuitKeybindings()
 	//keylistModel.SetHeight(20)
 	//keylistModel.SetWidth(30)
 
@@ -152,20 +158,16 @@ we can do multi line items too.
 	)
 	statusbarModel.SetContent("FOO", "BAR", "FRESH", "BAZZ")
 
-	c := Client{
-		input:     inputModel,
-		username:  ownUserName,
-		userList:  userListModel,
-		keyList:   keylistModel,
-		statusbar: statusbarModel,
-		help:      help,
-		debug:     debug,
-		keys:      Keys,
-	}
+	c.input = inputModel
+	c.username = ownUserName
+	c.userList = userListModel
+	c.keyList = keylistModel
+	c.statusbar = statusbarModel
+	c.help = help
+	c.debug = debug
+	c.keys = Keys
+
 	c.messages = append(c.messages, dataChatContent)
-	c.ctx = context.ProgramContext{
-		Theme: themeData,
-	}
 
 	return c, loggerFile
 }

@@ -41,16 +41,18 @@ func (c Client) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		log.Debug("Key pressed", "key", msg.String())
 		switch {
 		case key.Matches(msg, c.keys.Quit):
-			if !c.inputActive() {
+			if !c.InputActive() {
 				return c, tea.Quit
 			}
 		case key.Matches(msg, c.keys.SwitchFocus):
 			c.statusbar.SetContent("BAZZ", "FOO", "PING", "PONG")
 			if c.input.Focused() {
 				c.input.Blur()
+				c.ctx.InputActive = false
 			} else {
 				c.input.Focus()
 				c.input.CursorStart()
+				c.ctx.InputActive = true
 			}
 
 		case key.Matches(msg, c.keys.Help):
@@ -128,12 +130,14 @@ func (c *Client) sendMessage(message string) {
 	c.viewport.SetContent(str)
 }
 
-func (c *Client) inputActive() bool {
+func (c *Client) InputActive() bool {
 	if c.input.Focused() {
 		return true
 	}
 	if c.keyList.FilterState() == list.Filtering {
+		c.ctx.InputActive = true
 		return true
 	}
+	c.ctx.InputActive = false
 	return false
 }

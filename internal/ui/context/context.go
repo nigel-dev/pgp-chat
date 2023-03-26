@@ -1,6 +1,6 @@
 package context
 
-import "github.com/nbazzeghin/pgp-chat/internal/tui/theme"
+import "github.com/nbazzeghin/pgp-chat/internal/ui/theme"
 
 type ProgramContext struct {
 	ScreenHeight      int
@@ -9,4 +9,5 @@ type ProgramContext struct {
 	MainContentHeight int
 	Error             error
 	Theme             theme.Theme
+	InputActive       bool
 }
