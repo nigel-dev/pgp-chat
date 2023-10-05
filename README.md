@@ -39,6 +39,9 @@ go build .
 - The chat app should make use of p2p and DHT to connect to peers.
 - Messages sent to other peers should be encrypted with GPG.
 - You must have all other users GPG keys to be able to send/receive messages from them.
+  - Search `keys.openpgp.org` for keys
+  - Ability to configure other key servers
+  - Maybe impliment WKD searching (https://wiki.gnupg.org/WKD)
 - Messages you can not decrypt will not display in message window
 - Must use TLS for communication between nodes
 - Client mode will display TUI
