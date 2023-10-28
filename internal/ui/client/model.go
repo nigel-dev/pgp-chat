@@ -41,7 +41,7 @@ type Client struct {
 	keyList       list.Model
 	publicKeys    []PublicKey
 	help          bhelp.Model
-	statusbar     statusbar.Bubble
+	statusbar     statusbar.Model
 	keys          KeyMap
 	activeBox     int
 	ctx           context.ProgramContext
