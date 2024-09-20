@@ -4,7 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/nbazzeghin/pgp-chat/internal/ui/context"
+	"github.com/nigel-dev/pgp-chat/internal/ui/context"
 	"golang.org/x/exp/slices"
 	"strconv"
 )
@@ -34,6 +34,7 @@ func newPublicKeyDelegate(ctx *context.ProgramContext) list.DefaultDelegate {
 					a := !publicKey.active
 					publicKey.active = a
 					m.SetItem(idx, publicKey)
+					m.ResetFilter()
 					return m.NewStatusMessage(statusMessageStyle("You chose " + title + " | active:" +
 						strconv.FormatBool(publicKey.active)))
 				}

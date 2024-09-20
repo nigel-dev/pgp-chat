@@ -1,5 +1,5 @@
 /*
-Copyright © 2023 Nigel Bazzeghin
+Copyright © 2024 Nigel Bazzeghin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ package cmd
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/nbazzeghin/pgp-chat/internal/ui/client"
+	"github.com/nigel-dev/pgp-chat/internal/ui/client"
 	"os"
 
 	"github.com/spf13/cobra"

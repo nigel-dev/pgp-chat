@@ -3,7 +3,7 @@ package client
 import (
 	"fmt"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/nbazzeghin/pgp-chat/internal/utils"
+	"github.com/nigel-dev/pgp-chat/internal/utils"
 	"strings"
 )
 

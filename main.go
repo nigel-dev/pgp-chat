@@ -1,5 +1,5 @@
 /*
-Copyright © 2022 Nigel Bazzeghin
+Copyright © 2024 Nigel Bazzeghin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/nbazzeghin/pgp-chat/cmd"
+import "github.com/nigel-dev/pgp-chat/cmd"
 
 var (
 	version = "dev"

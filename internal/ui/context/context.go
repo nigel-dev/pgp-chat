@@ -1,6 +1,6 @@
 package context
 
-import "github.com/nbazzeghin/pgp-chat/internal/ui/theme"
+import "github.com/nigel-dev/pgp-chat/internal/ui/theme"
 
 type ProgramContext struct {
 	ScreenHeight      int

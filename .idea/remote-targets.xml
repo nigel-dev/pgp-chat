@@ -17,6 +17,9 @@
         <ContributedStateBase type="GoLanguageRuntime">
           <config />
         </ContributedStateBase>
+        <ContributedStateBase type="GoLanguageRuntime">
+          <config />
+        </ContributedStateBase>
       </target>
     </targets>
   </component>
